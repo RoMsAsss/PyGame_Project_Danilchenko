@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="notes-container">
+    <header class="notes-header">
+        <div class="header-title">
+            <i class="fas fa-book-open"></i>
+            <h1>Заметки</h1>
+        </div>
+        <button class="back-btn" onclick="window.location.href='{{ url_for('index') }}'">
+            <i class="fas fa-arrow-left"></i>
+            На главную
+        </button>
+    </header>
+
+    <div class="notes-controls">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Поиск заметок...">
+        </div>
+        <button class="add-note-btn" data-bs-toggle="modal" data-bs-target="#addNoteModal">
+            <i class="fas fa-plus"></i>
+            Новая заметка
+        </button>
+    </div>
+
+    <div class="notes-grid">
+        {% for note in notes %}
+        <div class="note-card" onclick="window.location.href='{{ url_for('view_note', id=note.id) }}'">
+            <h3>{{ note.title }}</h3>
+            <p>{{ note.content[:100] }}{% if note.content|length > 100 %}...{% endif %}</p>
+            <div class="note-date">
+                <i class="far fa-calendar-alt"></i>
+                <span>{{ note.created_at.strftime('%d.%m.%Y') }}</span>
+            </div>
+            <div class="note-actions">
+                <button class="note-action-btn" title="Редактировать" onclick="event.stopPropagation(); window.location.href='{{ url_for('edit_note', id=note.id) }}'">
+                    <i class="far fa-edit"></i>
+                </button>
+                <button class="note-action-btn" title="Удалить" onclick="event.stopPropagation(); if(confirm('Удалить заметку?')) window.location.href='{{ url_for('delete_note', id=note.id) }}'">
+                    <i class="far fa-trash-alt"></i>
+                </button>
+            </div>
+            <div class="hover-effect"></div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <footer class="notes-footer">
+        <button class="settings-btn">
+            <i class="fas fa-cog"></i>
+        </button>
+        <p class="version">Версия 1.0.0</p>
+    </footer>
+</div>
+
+<!-- Модальное окно для добавления заметки -->
+<div class="modal fade" id="addNoteModal" tabindex="-1" aria-labelledby="addNoteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addNoteModalLabel">Новая заметка</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{{ url_for('add_note') }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Заголовок</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Содержание</label>
+                        <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

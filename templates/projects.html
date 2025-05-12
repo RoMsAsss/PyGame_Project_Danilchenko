@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="projects-container">
+    <header class="projects-header">
+        <div class="header-title">
+            <i class="fas fa-tasks"></i>
+            <h1>Проекты</h1>
+        </div>
+        <button class="back-btn" onclick="window.location.href='{{ url_for('index') }}'">
+            <i class="fas fa-arrow-left"></i>
+            На главную
+        </button>
+    </header>
+
+    <div class="projects-list">
+        <p style="text-align: center; margin-top: 2rem;">Функционал проектов находится в разработке</p>
+    </div>
+</div>
+{% endblock %}

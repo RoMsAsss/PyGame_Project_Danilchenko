@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="notes-container">
+    <header class="notes-header">
+        <div class="header-title">
+            <i class="fas fa-book"></i>
+            <h1>Дневник</h1>
+        </div>
+        <button class="back-btn" onclick="window.location.href='{{ url_for('index') }}'">
+            <i class="fas fa-arrow-left"></i>
+            На главную
+        </button>
+    </header>
+
+    <div class="notes-controls">
+        <button class="add-note-btn" data-bs-toggle="modal" data-bs-target="#addDiaryModal">
+            <i class="fas fa-plus"></i>
+            Новая запись
+        </button>
+    </div>
+
+    <div class="notes-grid">
+        {% for entry in entries %}
+        <div class="note-card" onclick="window.location.href='{{ url_for('view_diary_entry', id=entry.id) }}'">
+            <h3>{{ entry.title }}</h3>
+            <p>{{ entry.content[:100] }}{% if entry.content|length > 100 %}...{% endif %}</p>
+            <div class="note-date">
+                <i class="far fa-calendar-alt"></i>
+                <span>{{ entry.date.strftime('%d.%m.%Y') }}</span>
+                {% if entry.mood %}<span class="mood-badge">{{ entry.mood }}</span>{% endif %}
+            </div>
+            <div class="note-actions">
+                <button class="note-action-btn" title="Удалить"
+                        onclick="event.stopPropagation(); if(confirm('Удалить запись?')) {
+                            fetch('{{ url_for('delete_diary_entry', id=entry.id) }}', {
+                                method: 'POST',
+                            }).then(() => window.location.reload());
+                        }">
+                    <i class="far fa-trash-alt"></i>
+                </button>
+            </div>
+            <div class="hover-effect"></div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Модальное окно добавления записи -->
+<div class="modal fade" id="addDiaryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Новая запись</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{{ url_for('add_diary_entry') }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Дата</label>
+                        <input type="date" name="date" class="form-control"
+                               value="{{ current_date }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Заголовок</label>
+                        <input type="text" name="title" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Настроение</label>
+                        <select name="mood" class="form-select">
+                            <option value="">Не указано</option>
+                            <option value="😊 Хорошее">😊 Хорошее</option>
+                            <option value="😐 Нормальное">😐 Нормальное</option>
+                            <option value="😞 Плохое">😞 Плохое</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Содержание</label>
+                        <textarea name="content" class="form-control" rows="5" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

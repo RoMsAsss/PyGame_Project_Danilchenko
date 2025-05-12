@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-menu">
+    <header class="menu-header">
+        <h1 class="logo">Мой<span>Органайзер</span></h1>
+        <p class="slogan">Упорядочьте свою жизнь, {{ current_user.name }}</p>
+    </header>
+
+    <div class="menu-grid">
+        <div class="menu-card" onclick="window.location.href='{{ url_for('notes') }}'">
+            <div class="card-icon">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <h3>Заметки</h3>
+            <p>Создавайте и организуйте свои мысли</p>
+            <div class="hover-effect"></div>
+        </div>
+
+        <div class="menu-card" onclick="window.location.href='{{ url_for('schedule') }}'">
+            <div class="card-icon">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <h3>Распорядок</h3>
+            <p>Планируйте свой день эффективно</p>
+            <div class="hover-effect"></div>
+        </div>
+
+        <div class="menu-card" onclick="window.location.href='{{ url_for('diary') }}'">
+            <div class="card-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <h3>Дневник</h3>
+            <p>Записывайте важные моменты</p>
+            <div class="hover-effect"></div>
+        </div>
+    </div>
+
+    <footer class="menu-footer">
+        <button class="settings-btn" onclick="window.location.href='{{ url_for('logout') }}'">
+            <i class="fas fa-sign-out-alt"></i>
+        </button>
+        <p class="version">Версия 1.0.0</p>
+    </footer>
+</div>
+{% endblock %}

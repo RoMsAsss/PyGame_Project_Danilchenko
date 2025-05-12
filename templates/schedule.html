@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="notes-container">
+    <header class="notes-header">
+        <div class="header-title">
+            <i class="fas fa-calendar-alt"></i>
+            <h1>Распорядок дня</h1>
+        </div>
+        <button class="back-btn" onclick="window.location.href='{{ url_for('index') }}'">
+            <i class="fas fa-arrow-left"></i> На главную
+        </button>
+    </header>
+
+    <div class="notes-controls">
+        <button class="add-note-btn" data-bs-toggle="modal" data-bs-target="#addEventModal">
+            <i class="fas fa-plus"></i> Добавить событие
+        </button>
+    </div>
+
+    <div class="schedule-days">
+        {% for date, events in days.items() %}
+        <div class="day-card">
+            <h3>{{ date|format_date }}</h3>
+
+            {% for event in events %}
+            <div class="note-card">
+                <div class="event-time">
+                    {{ event.start_time|format_time }} - {{ event.end_time|format_time }}
+                </div>
+                <h4>{{ event.title }}</h4>
+                {% if event.description %}
+                <p>{{ event.description }}</p>
+                {% endif %}
+                <div class="note-actions">
+                    <form method="POST" action="{{ url_for('delete_schedule', id=event.id) }}"
+                          onsubmit="return confirm('Удалить событие?')">
+                        <button type="submit" class="note-action-btn" title="Удалить">
+                            <i class="far fa-trash-alt"></i>
+                        </button>
+                    </form>
+                </div>
+                <div class="hover-effect"></div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="no-events">Нет запланированных событий</p>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Модальное окно добавления -->
+<div class="modal fade" id="addEventModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Новое событие</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{{ url_for('add_schedule') }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Дата</label>
+                        <input type="date" name="date" class="form-control"
+                               value="{{ datetime.utcnow().strftime('%Y-%m-%d') }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Время</label>
+                        <input type="time" name="time" class="form-control"
+                               value="09:00" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Название</label>
+                        <input type="text" name="title" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Описание</label>
+                        <textarea name="description" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Добавить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

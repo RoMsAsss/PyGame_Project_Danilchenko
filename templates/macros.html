@@ -1,0 +1,3 @@
+{% macro now() %}
+    {{ datetime.utcnow() if datetime is defined else '' }}
+{% endmacro %}

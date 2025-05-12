@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="notes-container">
+    <header class="notes-header">
+        <div class="header-title">
+            <i class="fas fa-book"></i>
+            <h1>Просмотр записи</h1>
+        </div>
+        <button class="back-btn" onclick="window.location.href='{{ url_for('diary') }}'">
+            <i class="fas fa-arrow-left"></i>
+            Назад
+        </button>
+    </header>
+
+    <div class="note-view">
+        <h2>{{ entry.title }}</h2>
+        <div class="note-meta">
+            <span class="date">{{ entry.date.strftime('%d.%m.%Y') }}</span>
+            {% if entry.mood %}<span class="mood">{{ entry.mood }}</span>{% endif %}
+        </div>
+        <div class="note-content">
+            {{ entry.content | replace('\n', '<br>') | safe }}
+        </div>
+        <div class="note-actions">
+            <form method="POST" action="{{ url_for('delete_diary_entry', id=entry.id) }}"
+                  onsubmit="return confirm('Удалить запись?')">
+                <button type="submit" class="btn btn-danger">
+                    <i class="far fa-trash-alt"></i> Удалить запись
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
